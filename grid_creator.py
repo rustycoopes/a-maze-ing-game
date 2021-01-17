@@ -16,10 +16,14 @@ class Grid():
         self._build_relationships()
 
     def _create_cells(self):
+
+        cell_number = 1
         for col_idx in range(1, self._cells_across + 1):        
             for row_idx in range(1, self._cells_down + 1):
-                cell = Cell(row_idx, col_idx)
-                self._cells.append(cell)                                           
+                cell = Cell(row_idx, col_idx, cell_number)
+                self._cells.append(cell)           
+                cell_number = cell_number + 1     
+
     def _build_relationships(self):
         for i in range(0, len(self._cells)):
             cell_idx = self._cell_left_idx(i)
@@ -74,10 +78,10 @@ class CellRelationships():
 
 class Cell():
     
-    def __init__(self, row_num, col_num):
+    def __init__(self, row_num, col_num, number):
         self.RowNum = row_num
         self.ColNum = col_num
-        self.Number = row_num * col_num
+        self.Number = number
         self.Neighbours = CellRelationships()
 
     def describe(self):

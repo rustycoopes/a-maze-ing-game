@@ -1,47 +1,91 @@
 from grid_creator import Grid, Cell, CellRelationships
-
+from game_colors import WHITE, BLUE, RED
 
 class CellPaintCoOrdinates():
-    def __init__(self, topleft, topright, bottomleft, bottomright):
-        self.Topleft = topleft
-        self.Topright = topright
-        self.Bottomleft = bottomleft
-        self.Bottomright = bottomright
+    
+    
+    def __init__(self,cell1, cell2=None, cell_h=20, cell_w=20):
+        self.Cell1 = cell1
+        self.Cell2 = cell2
+        self.Cell_h = cell_h
+        self.Cell_w = cell_w
+        self.TopLeft = None
+        self.BottomLeft = None
+        self.TopRight = None
+        self.BottomRight = None
+        self._calc_co_ordinates()
+           
+
+    def _calc_co_ordinates(self):
+
+        minRow = self._get_min_row() - 1
+        minCol = self._get_min_col() - 1
+        maxRow = self._get_max_row() - 1
+        maxCol = self._get_max_col() - 1
+
+        self.TopLeft = [minRow * self.Cell_h, minCol * self.Cell_w]
+        self.BottomLeft = [(maxRow + 1 )* self.Cell_h, minCol * self.Cell_w]
+        self.TopRight = [minRow * self.Cell_h, (maxCol + 1) * self.Cell_w]
+        self.BottomRight = [ (maxRow +1) * self.Cell_h, (maxCol + 1) * self.Cell_w]
         
+        #cal co-ords - need width and height per cell
+    def _get_min_row(self):
+        if self.Cell2 is None:
+            return self.Cell1.RowNum
+        else:
+            return min(self.Cell1.RowNum, self.Cell2.RowNum)
+
+    def _get_min_col(self):
+        if self.Cell2 is None:
+            return self.Cell1.ColNum
+        else:
+            return min(self.Cell1.ColNum, self.Cell2.ColNum)
+
+    def _get_max_row(self):
+        if self.Cell2 is None:
+            return self.Cell1.RowNum
+        else:
+            return max(self.Cell1.RowNum, self.Cell2.RowNum)
+
+    def _get_max_col(self):
+        if self.Cell2 is None:
+            return self.Cell1.ColNum
+        else:
+            return max(self.Cell1.ColNum, self.Cell2.ColNum)
+
 class GridPainter():
 
-    def __init__(self, pygame, screen):
+    def __init__(self, pygame, screen, cell_h, cell_w):
         self._pygame = pygame
         self._screen = screen
+        self._cell_h = cell_h
+        self._cell_w = cell_w
 
     def paint_grid(self, grid):
 
         cells = grid.get_cells()
-                #new_cell = Cell((i*j), [x,y], [x + self._cell_w, y], [x, y+ self._cell_h], [x + self._cell_w, y + self._cell_h])
-
-#   generate line co-ordinates
-#        self.Coordinates = CellPaintCoOrdinates(topleft, topright, bottomleft, bottomright)
 
         for cell in cells:
-            self._paint_cell(cell)
+            self._paint_cell_outline(cell)
 
         self._pygame.display.update()  
 
-
-    def _paint_cell(self, cell):
-            coords = cell.Coordinates
-
-            self._pygame.draw.line(self._screen, WHITE, coords.Topleft, coords.Topright)           # top of cell
-            self._pygame.draw.line(self._screen, WHITE, coords.Topright, coords._Bottomright)   # right of cell
-            self._pygame.draw.line(self._screen, WHITE, coords.Bottomleft, coords.Bottomright)   # bottom of cell
-            self._pygame.draw.line(self._screen, WHITE, coords.Topleft, coords.Bottomleft)           # left of cell
-
-    def print_debug(self,grid):
-        cells = grid.get_cells()
-
-        for cell in cells:
-            logging.info(cell.describe())
+    def fill_cell(self, cell1, cell2=None, color=BLUE):
+        coOrds = CellPaintCoOrdinates(cell1, cell2, cell_h=self._cell_h, cell_w=self._cell_w)
+        topleft_x = coOrds.TopLeft[1] +1
+        topleft_y = coOrds.TopLeft[0] +1
+        botright_x = coOrds.BottomRight[1] - topleft_x 
+        botright_y = coOrds.BottomRight[0] - topleft_y 
+        
+        self._pygame.draw.rect(self._screen, color, (topleft_x, topleft_y, botright_x, botright_y), 0)        # used to re-colour the path after single_cell
+        self._pygame.display.update()   
 
 
+    def _paint_cell_outline(self, cell):
+            coords = CellPaintCoOrdinates(cell, self._cell_h, self._cell_w)
 
+            self._pygame.draw.line(self._screen, WHITE, coords.TopLeft, coords.TopRight)           # top of cell
+            self._pygame.draw.line(self._screen, WHITE, coords.TopRight, coords.BottomRight)   # right of cell
+            self._pygame.draw.line(self._screen, WHITE, coords.BottomLeft, coords.BottomRight)   # bottom of cell
+            self._pygame.draw.line(self._screen, WHITE, coords.TopLeft, coords.BottomLeft)           # left of cell
 

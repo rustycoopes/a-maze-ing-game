@@ -8,12 +8,16 @@ def test_right_number_of_cells_and_rowcol(twobytwogrid):
     assert len(cells) == 4
     assert cells[0].RowNum == 1
     assert cells[0].ColNum == 1
+    assert cells[0].Number == 1
     assert cells[1].RowNum == 2
     assert cells[1].ColNum == 1
+    assert cells[1].Number == 2
     assert cells[2].RowNum == 1
     assert cells[2].ColNum == 2
+    assert cells[2].Number == 3
     assert cells[3].RowNum == 2
     assert cells[3].ColNum == 2
+    assert cells[3].Number == 4
 """
     1  3
     2  4
@@ -29,6 +33,7 @@ def test_assert_lefts(twobytwogrid):
 def test_assert_rights(twobytwogrid):
     cells = twobytwogrid.get_cells()
     assert cells[0].Neighbours.Right is cells[2]
+    assert cells[0].Neighbours.Right.Number == 3
     assert cells[1].Neighbours.Right is cells[3]
     assert cells[2].Neighbours.Right is None
     assert cells[3].Neighbours.Right is None
@@ -44,6 +49,7 @@ def test_assert_tops(twobytwogrid):
 def test_assert_belows(twobytwogrid):
     cells = twobytwogrid.get_cells()
     assert cells[0].Neighbours.Below is cells[1]
+    assert cells[0].Neighbours.Below.Number == 2
     assert cells[1].Neighbours.Below is None
     assert cells[2].Neighbours.Below is cells[3]
     assert cells[3].Neighbours.Below is None
