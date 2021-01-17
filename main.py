@@ -9,20 +9,21 @@ from grid_painting import GridPainter
 from maze_creator import Maze_Maker
 from game_colors import RED, GREEN, BLUE
 # set up pygame window
-WIDTH = 600
-HEIGHT = 600
+WIDTH = 1000
+HEIGHT = 1000
 FPS = 30
 
+GRID_SIDES_COUNT = 15
 
 
 def pathcreated(cell1, cell2):
-    time.sleep(0.005)
+    #time.sleep(0.005)
     painter.fill_cell(cell1, cell2)
     print("path from {} to {}".format(cell1.Number, cell2.Number))
 
 def pathbacktracked(cell):
     painter.fill_cell(cell, color=RED)
-    time.sleep(0.005)
+    #time.sleep(0.005)
     painter.fill_cell(cell)
     print("backtracking from {}".format(cell.Number))
 
@@ -35,7 +36,6 @@ pygame.display.set_caption("Python Maze Generator")
 clock = pygame.time.Clock()
 
 grid_start = [1,1]
-GRID_SIDES_COUNT = 10
 CELL_LENGTH = WIDTH // GRID_SIDES_COUNT
 
 myGrid = grid_creator.Grid(CELL_LENGTH,CELL_LENGTH,GRID_SIDES_COUNT ,GRID_SIDES_COUNT,grid_start)
@@ -48,7 +48,7 @@ maze_gen.on_path_created(pathcreated)
 maze_gen.on_back_track(pathbacktracked)
 maze = maze_gen.create_new_maze()
 
-painter.fill_cell(maze.get_current_cell(), color=GREEN)
+painter.fill_cell_small(maze.get_current_cell(), color=GREEN)
 
 x, y = CELL_LENGTH, CELL_LENGTH                     # starting position of grid
 pygame.display.update()  
@@ -63,7 +63,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            painter.fill_cell(maze.get_current_cell(), color=BLUE)
+            painter.fill_cell_small(maze.get_current_cell(), color=BLUE)
             if event.key == pygame.K_LEFT:
                 maze.TryMoveLeft()
             if event.key == pygame.K_RIGHT:
@@ -73,4 +73,4 @@ while running:
             if event.key == pygame.K_DOWN:
                 maze.TryMoveDown()
 
-            painter.fill_cell(maze.get_current_cell(), color=GREEN)
+            painter.fill_cell_small(maze.get_current_cell(), color=GREEN)

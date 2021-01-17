@@ -92,6 +92,11 @@ class Maze_Maker():
             self._maze_path[cell_from].append(cell_to)
         else:
             self._maze_path[cell_from] = [cell_to]
+        if cell_to in self._maze_path:
+            self._maze_path[cell_to].append(cell_from)
+        else:
+            self._maze_path[cell_to] = [cell_from]
+
 
         if self._path_created_callback is not None:
             self._path_created_callback(cell_from, cell_to)

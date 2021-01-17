@@ -80,9 +80,22 @@ class GridPainter():
         self._pygame.draw.rect(self._screen, color, (topleft_x, topleft_y, botright_x, botright_y), 0)        # used to re-colour the path after single_cell
         self._pygame.display.update()   
 
+    def fill_cell_small(self, cell1, cell2=None, color=BLUE):
+        coOrds = CellPaintCoOrdinates(cell1, cell2, cell_h=self._cell_h, cell_w=self._cell_w)
+        margin = (coOrds.TopRight[1]-coOrds.TopLeft[1] ) // 2 
+        topleft_x = coOrds.TopLeft[1] + (margin /2)
+        topleft_x = coOrds.TopLeft[1] + (margin /2)
+        topleft_y = coOrds.TopLeft[0] + (margin /2)
+        botright_x =  margin
+        botright_y =  margin
+        
+        self._pygame.draw.rect(self._screen, color, (topleft_x, topleft_y, botright_x, botright_y), 0)        # used to re-colour the path after single_cell
+        self._pygame.display.update()   
+
+
 
     def _paint_cell_outline(self, cell):
-            coords = CellPaintCoOrdinates(cell, self._cell_h, self._cell_w)
+            coords = CellPaintCoOrdinates(cell, cell_h=self._cell_h, cell_w=self._cell_w)
 
             self._pygame.draw.line(self._screen, WHITE, coords.TopLeft, coords.TopRight)           # top of cell
             self._pygame.draw.line(self._screen, WHITE, coords.TopRight, coords.BottomRight)   # right of cell
