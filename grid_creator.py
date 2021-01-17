@@ -5,13 +5,12 @@ grid = []
 
 class Grid():
 
-    def __init__(self, cell_h, cell_w, cells_across, cells_down, top_left):
+    def __init__(self, cell_h, cell_w, cells_across, cells_down):
         self._cell_h = cell_h
         self._cell_w = cell_w
         self._cells_across = cells_across
         self._cells = []
         self._cells_down = cells_down
-        self._top_left = top_left
         self._create_cells()
         self._build_relationships()
 
