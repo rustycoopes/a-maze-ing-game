@@ -13,7 +13,7 @@ WIDTH = 1400
 HEIGHT = 1400
 FPS = 30
 
-GRID_SIDES_COUNT = 5
+GRID_SIDES_COUNT = 7
 
 
 def pathcreated(cell1, cell2):
@@ -52,12 +52,57 @@ def inititalise_maze():
     maze_gen.on_back_track(pathbacktracked)
     maze = maze_gen.create_new_maze()
 
-    painter.fill_cell_small(maze.get_current_cell(), color=GREEN)
     finish = pygame.image.load("images/finish.png")
     farleftcell = (GRID_SIDES_COUNT -1) * CELL_LENGTH
     finish = pygame.transform.scale(finish, (CELL_LENGTH -2, CELL_LENGTH -2))
     screen.blit(finish, (farleftcell, farleftcell))
+
+    ss = SpriteSheet("images/players.png")
+    sprite_size_H = 80
+    sprite_size_W = 80
+    player_sprites= {"RIGHT": ss.get_image(  1 * sprite_size_W, 0  * sprite_size_H,  sprite_size_W, sprite_size_H), 
+         "LEFT": ss.get_image( 10 * sprite_size_W, 2  * sprite_size_H,  sprite_size_W, sprite_size_H), 
+          "UP": ss.get_image(  1 * sprite_size_W, 5  * sprite_size_H,  sprite_size_W, sprite_size_H), 
+          "DOWN": ss.get_image(  6 * sprite_size_W, 5  * sprite_size_H,  sprite_size_W, sprite_size_H)}
+    player_sprites["RIGHT"] =  pygame.transform.scale(player_sprites["RIGHT"], (int(CELL_LENGTH * 0.5), int(CELL_LENGTH * 0.5)))
+    player_sprites["LEFT"] =  pygame.transform.scale(player_sprites["LEFT"], (int(CELL_LENGTH * 0.5), int(CELL_LENGTH * 0.5)))
+    player_sprites["UP"] =  pygame.transform.scale(player_sprites["UP"], (int(CELL_LENGTH * 0.5), int(CELL_LENGTH * 0.5)))
+    player_sprites["DOWN"] =  pygame.transform.scale(player_sprites["DOWN"], (int(CELL_LENGTH * 0.5), int(CELL_LENGTH * 0.5)))
+
+    painter.set_player_sprites(player_sprites)
+    painter.paint_player(maze.get_current_cell(), "UP")
+
     pygame.display.update()  
+
+class SpriteSheet(object):
+    """ Class used to grab images out of a sprite sheet. """
+ 
+    def __init__(self, file_name):
+        """ Constructor. Pass in the file name of the sprite sheet. """
+ 
+        # Load the sprite sheet.
+        self.sprite_sheet = pygame.image.load(file_name).convert_alpha()
+ 
+ 
+    def get_image(self, x, y, width, height):
+        """ Grab a single image out of a larger spritesheet     
+            Pass in the x, y location of the sprite
+            and the width and height of the sprite. """
+ 
+        # Create a new blank image
+        image = pygame.Surface([width, height]).convert()
+ 
+        # Copy the sprite from the large sheet onto the smaller image
+        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
+ 
+        # Assuming black works as the transparent color
+        image.set_colorkey((0,0,0))
+ 
+        # Return the image
+        return image
+
+
+    
 
 font = pygame.font.Font(None, 32)
 input_grid_size = pygame.Rect(1 , WIDTH - 38, 140, 32)
@@ -86,19 +131,23 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            painter.fill_cell_small(maze.get_current_cell(), color=BLUE)
+            painter.fill_cell(maze.get_current_cell(), color=BLUE)
             painter.fill_cell_circle_small(maze.get_current_cell(), color=GREY)
             if event.key == pygame.K_LEFT:
                 maze.TryMoveLeft()
                 moves = moves + 1
+                painter.paint_player(maze.get_current_cell(), "LEFT")
             if event.key == pygame.K_RIGHT:
                 maze.TryMoveRight()
+                painter.paint_player(maze.get_current_cell(), "RIGHT")
                 moves = moves + 1
             if event.key == pygame.K_UP:
                 maze.TryMoveUp()
+                painter.paint_player(maze.get_current_cell(), "UP")
                 moves = moves + 1
             if event.key == pygame.K_DOWN:
                 maze.TryMoveDown()
+                painter.paint_player(maze.get_current_cell(), "DOWN")
                 moves = moves + 1
             if active:
                 if event.key == pygame.K_RETURN:
@@ -112,7 +161,6 @@ while running:
                 else:
                     text += event.unicode
             
-            painter.fill_cell_small(maze.get_current_cell(), color=GREEN)
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if input_grid_size.collidepoint(event.pos):

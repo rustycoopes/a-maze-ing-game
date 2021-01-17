@@ -61,6 +61,7 @@ class GridPainter():
         self._cell_h = cell_h
         self._cell_w = cell_w
         self._top_left = top_left
+        self._player_sprites = None
 
     def paint_grid(self, grid):
 
@@ -71,6 +72,9 @@ class GridPainter():
 
         self._pygame.display.update()  
 
+    def set_player_sprites(self, player_sprites):
+        self._player_sprites = player_sprites
+
     def fill_cell(self, cell1, cell2=None, color=BLUE):
         coOrds = CellPaintCoOrdinates(cell1, cell2, cell_h=self._cell_h, cell_w=self._cell_w)
         topleft_x = coOrds.TopLeft[1] +1
@@ -80,6 +84,14 @@ class GridPainter():
         
         self._pygame.draw.rect(self._screen, color, (topleft_x, topleft_y, botright_x, botright_y), 0)        # used to re-colour the path after single_cell
         self._pygame.display.update()   
+
+    def paint_player(self, cell, direction):
+        coOrds = CellPaintCoOrdinates(cell, cell_h=self._cell_h, cell_w=self._cell_w)
+        image = self._player_sprites[direction]
+        margin = (coOrds.TopRight[1]-coOrds.TopLeft[1] ) // 4 
+        self._screen.blit(image, (coOrds.TopLeft[1] + margin, coOrds.TopLeft[0] + margin))
+        self._pygame.display.update()
+        
 
     def fill_cell_small(self, cell1, cell2=None, color=BLUE):
         coOrds = CellPaintCoOrdinates(cell1, cell2, cell_h=self._cell_h, cell_w=self._cell_w)
@@ -99,7 +111,7 @@ class GridPainter():
         mid_x = coOrds.TopLeft[1] + margin
         mid_y = coOrds.TopLeft[0] + margin
 
-        self._pygame.draw.circle(self._screen, color, (mid_x, mid_y ), margin /4)        
+        self._pygame.draw.circle(self._screen, color, (mid_x, mid_y ), margin / 6)        
         self._pygame.display.update()   
 
 

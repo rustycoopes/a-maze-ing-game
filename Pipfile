@@ -8,6 +8,7 @@ pytest = "*"
 
 [packages]
 pygame = "*"
+spritesheet = "*"
 
 [requires]
 python_version = "3.7"
