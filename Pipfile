@@ -8,7 +8,7 @@ pytest = "*"
 
 [packages]
 pygame = "*"
-spritesheet = "*"
+win32api = "*"
 
 [requires]
 python_version = "3.7"

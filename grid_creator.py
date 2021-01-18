@@ -12,6 +12,8 @@ class Grid():
         self._cells = []
         self._cells_down = cells_down
         self._create_cells()
+        logging.info("creating cells {}  for grid  {} rows, {} columns".format(len(self._cells), cells_down, cells_across))
+        logging.debug("creating relationships between cells")
         self._build_relationships()
 
     def _create_cells(self):
@@ -24,6 +26,7 @@ class Grid():
                 cell_number = cell_number + 1     
 
     def _build_relationships(self):
+
         for i in range(0, len(self._cells)):
             cell_idx = self._cell_left_idx(i)
             if cell_idx > -1:

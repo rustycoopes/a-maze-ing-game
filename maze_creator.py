@@ -1,7 +1,7 @@
 import random
+import logging
 
-
-class Maze():
+class MazeCursor():
 
     def __init__(self, path, startCell):
         self._path = path
@@ -49,6 +49,7 @@ class Maze_Maker():
         self._on_backtrack_callback = None
     
     def create_new_maze(self):
+        logging.info("creating new maze creation")
         cell = self._grid.get_start_cell()
         self._visited.append(cell)
         self._stack.append(cell)
@@ -58,6 +59,7 @@ class Maze_Maker():
 
             neighbour = self._get_unvisited_neighbour(cell)
             if neighbour is not None:
+                logging.debug("creating path between cells {} and {}".format(cell.Number, neighbour.Number))
                 self._stack.append(cell)
                 self._make_path_between(cell, neighbour)
                 self._stack.append(neighbour)
@@ -65,7 +67,10 @@ class Maze_Maker():
             else:
                 if self._on_backtrack_callback is not None:
                     self._on_backtrack_callback(cell)
-        return Maze(self._maze_path, self._grid.get_start_cell())
+                logging.debug("back tracking from {}".format(cell.Number))
+
+
+        return MazeCursor(self._maze_path, self._grid.get_start_cell())
 
     def on_path_created(self, callback):
         self._path_created_callback = callback
