@@ -91,7 +91,10 @@ class GridPainter():
         margin = (coOrds.TopRight[1]-coOrds.TopLeft[1] ) // 4 
         self._screen.blit(image, (coOrds.TopLeft[1] + margin, coOrds.TopLeft[0] + margin))
         self._pygame.display.update()
-        
+
+    def set_finish(self, finish_image, farleftcell):
+        self._screen.blit(finish_image, (farleftcell, farleftcell))
+ 
 
     def fill_cell_small(self, cell1, cell2=None, color=BLUE):
         coOrds = CellPaintCoOrdinates(cell1, cell2, cell_h=self._cell_h, cell_w=self._cell_w)
@@ -111,7 +114,7 @@ class GridPainter():
         mid_x = coOrds.TopLeft[1] + margin
         mid_y = coOrds.TopLeft[0] + margin
 
-        self._pygame.draw.circle(self._screen, color, (mid_x, mid_y ), margin / 6)        
+        self._pygame.draw.circle(self._screen, color, (mid_x, mid_y ), margin / 8)        
         self._pygame.display.update()   
 
 
