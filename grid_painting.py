@@ -3,7 +3,6 @@ from game_colors import WHITE, BLUE, RED, GREY
 
 class CellPaintCoOrdinates():
     
-    
     def __init__(self,cell1, cell2=None, cell_h=20, cell_w=20):
         self.Cell1 = cell1
         self.Cell2 = cell2
