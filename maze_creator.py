@@ -2,7 +2,9 @@ import random
 import logging
 
 class MazeCursor():
-
+    """ Represents a stateful location on the maze, with the ability to progress to 
+    other connected cells.
+    """
     def __init__(self, path, startCell):
         self._path = path
         self._curr_cell = startCell
@@ -49,6 +51,12 @@ class Maze_Maker():
         self._on_backtrack_callback = None
     
     def create_new_maze(self):
+        """ Creates a new, unique maze path..
+        Uses a backtracking algorithum to randomly move to neighboring cells, 
+        carving a path of connections (and disconnections)
+        the stack and visited collections are used to track where we have been, and 
+        backtrack into other routes
+        """
         logging.info("creating new maze creation")
         cell = self._grid.get_start_cell()
         self._visited.append(cell)
@@ -79,6 +87,8 @@ class Maze_Maker():
         self._on_backtrack_callback = callback
 
     def _get_unvisited_neighbour(self, cell):
+        """ Return a random, unvisited neighbour.
+        """
         unvisited = []
         if cell.Neighbours.Above is not None and cell.Neighbours.Above not in self._visited:
             unvisited.append(cell.Neighbours.Above)
@@ -93,6 +103,9 @@ class Maze_Maker():
         return random.choice(unvisited)
     
     def _make_path_between(self, cell_from, cell_to):
+        """ Creates a bi-direction path between cells.
+        This is required for moving the player between cells.(walking back, not just fwd.)
+        """
         if cell_from in self._maze_path:
             self._maze_path[cell_from].append(cell_to)
         else:

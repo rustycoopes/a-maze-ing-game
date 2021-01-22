@@ -4,7 +4,8 @@ grid = []
 
 
 class Grid():
-
+    """ Container of cells.  Creating an n x n matrix of connected, navigable objects 
+    """
     def __init__(self, cell_h, cell_w, cells_across, cells_down):
         self._cell_h = cell_h
         self._cell_w = cell_w
@@ -12,12 +13,14 @@ class Grid():
         self._cells = []
         self._cells_down = cells_down
         self._create_cells()
-        logging.info("creating cells {}  for grid  {} rows, {} columns".format(len(self._cells), cells_down, cells_across))
-        logging.debug("creating relationships between cells")
+        logging.info('creating cells {}  for grid  {} rows, {} columns'.format(len(self._cells), cells_down, cells_across))
+        logging.debug('creating relationships between cells')
         self._build_relationships()
 
     def _create_cells(self):
-
+        """ Initialises a set of empty cell objects, disconnected from each other
+        """
+ 
         cell_number = 1
         for col_idx in range(1, self._cells_across + 1):        
             for row_idx in range(1, self._cells_down + 1):
@@ -26,7 +29,10 @@ class Grid():
                 cell_number = cell_number + 1     
 
     def _build_relationships(self):
-
+        """ Enriches cell objects to build relationships betweenthem.  If there is a valid neighbour to a cell 
+            a bi-directional mapping should be made. 
+        """
+ 
         for i in range(0, len(self._cells)):
             cell_idx = self._cell_left_idx(i)
             if cell_idx > -1:
@@ -63,6 +69,9 @@ class Grid():
             return -1
         
     def get_cells(self):
+        """ 
+        Returns all cells, fully related. 
+        """
         return self._cells
 
     def get_start_cell(self):
@@ -70,6 +79,9 @@ class Grid():
 
 
 class CellRelationships():
+    """ 
+    Structure to represent how to navigate between cells. 
+    """
 
     def __init__(self):
         self.Above = None
@@ -80,6 +92,9 @@ class CellRelationships():
 
 class Cell():
     
+    """ 
+    Structure to represent a cell, with connected cells.. 
+    """
     def __init__(self, row_num, col_num, number):
         self.RowNum = row_num
         self.ColNum = col_num

@@ -30,7 +30,10 @@ class SpriteSheet(object):
 
     
 def create_sprites(cell_size):
-    ss = SpriteSheet("images/players.png")
+    """ Loads required images for games, to make an appropriately sized set of images available to the painter
+    """
+
+    ss = SpriteSheet('images/players.png')
     sprite_size_H = 80
     sprite_size_W = 80
     player_sprites= {pygame.K_RIGHT: ss.get_image(  1 * sprite_size_W, 0  * sprite_size_H,  sprite_size_W, sprite_size_H), 
@@ -44,7 +47,7 @@ def create_sprites(cell_size):
     return player_sprites
 
 def create_finish(cell_size):
-    finish = pygame.image.load("images/finish.png")
+    finish = pygame.image.load('images/finish.png')
     finish = pygame.transform.scale(finish, (cell_size -2, cell_size -2))
     return finish
 

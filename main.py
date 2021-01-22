@@ -8,10 +8,10 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 import grid_creator
 from grid_painting import GridPainter
 from maze_creator import Maze_Maker
-from game_colors import RED, GREEN, BLUE, GREY
+from game_colors import RED, GREEN, BLUE, GREY, INACTIVE, ACTIVE
 import grid_images
 
-# TODO : EXTRACT INTO SCREEN CLASS
+
 import ctypes
 user32 = ctypes.windll.user32
 screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
@@ -20,7 +20,6 @@ logging.info("Detected screem size as {}".format(screensize))
 
 min_screen_size = int(min(screensize) * .95)
 
-# TODO : EXTRACT intO SOME CONFIG CLASS
 WIDTH = min_screen_size
 HEIGHT = min_screen_size
 FPS = 30
@@ -41,23 +40,34 @@ grid_start = [0, 0]
 # CREATE GAME STATE OJECT
 painter = None
 maze_cursor = None
+grid_size_input_text = ''
+move_count = 0
 
 
 
 def pathcreated(cell1, cell2):
+    """ paint a maze path ! """
     painter.fill_cell(cell1, cell2)
 
 def pathbacktracked(cell):
+    """ call back to reversing the path"""
     painter.fill_cell(cell, color=RED)
     painter.fill_cell(cell)
 
 
 def inititalise_maze():
+    """ Create the maze game:
+        * Paint a grid
+        * Calculate a random maze
+        * Paint the maze
+        * Set the player and finish location on screen
+    """
     CELL_LENGTH = (WIDTH - grid_start[0]) // GRID_SIDES_COUNT
-    global painter, maze_cursor
+    global painter, maze_cursor, grid_size_input_text, move_count
     blank_grid = grid_creator.Grid(CELL_LENGTH,CELL_LENGTH,GRID_SIDES_COUNT ,GRID_SIDES_COUNT)
 
     painter = GridPainter(pygame, screen,CELL_LENGTH,CELL_LENGTH, grid_start)
+    painter._clear_screen() 
     painter.paint_grid(blank_grid)
 
     maze_gen = Maze_Maker(blank_grid)
@@ -68,24 +78,40 @@ def inititalise_maze():
     painter.set_finish(grid_images.create_finish(CELL_LENGTH), ((GRID_SIDES_COUNT -1) * CELL_LENGTH))
     painter.set_player_sprites(grid_images.create_sprites(CELL_LENGTH))
     painter.paint_player(maze_cursor.get_current_cell(), pygame.K_DOWN)
-
+    grid_size_input_text = ''
+    move_count = 0
     pygame.display.update()  
 
-# TODO : HANDLE TEXT BOX AND LABEL CLASS
-font = pygame.font.Font(None, 32)
-input_grid_size = pygame.Rect(1 , WIDTH - 38, 140, 32)
 
-color_inactive = pygame.Color('lightskyblue3')
-color_active = pygame.Color('dodgerblue2')
-color = color_inactive
-active = False
-text = '{}'.format(GRID_SIDES_COUNT)
+grid_size_input_text = '{}'.format(GRID_SIDES_COUNT)
+input_grid_size_rect = pygame.Rect(1 , WIDTH - 38, 140, 32)
+moves_count_label_rect = pygame.Rect(150 , WIDTH - 38, 250, 32)
 
-moves_count_label = pygame.Rect(150 , WIDTH - 38, 250, 32)
+
+input_grid_size_is_active = False
+   
+
+def _action_mouse_click_on_grid_size_setting():
+    """ Handle the capture of mouse clicking to start capturing (or clearing) the grid size  """
+    global input_grid_size_is_active, grid_size_input_text
+    if input_grid_size_rect.collidepoint(event.pos):
+        input_grid_size_is_active = not input_grid_size_is_active
+    else:
+        input_grid_size_is_active = False
+    if input_grid_size_is_active:
+        grid_size_input_text = ''
+ 
+def  _update_moves_label():
+    moves_text = 'moves made : {}'.format(move_count)
+    painter.update_rect_text(moves_text, moves_count_label_rect, input_grid_size_is_active)
+
+def _update_grid_size_label():
+    painter.update_rect_text(grid_size_input_text, input_grid_size_rect, input_grid_size_is_active)
+
 
 inititalise_maze()
 
-move_count = 0
+
 
 # ##### pygame loop #######
 running = True
@@ -115,41 +141,24 @@ while running:
                 maze_cursor.TryMoveDown()
                 painter.paint_player(maze_cursor.get_current_cell(), pygame.K_DOWN)
                 move_count = move_count + 1
-            if active:
+            if input_grid_size_is_active:
                 if event.key == pygame.K_RETURN:
-                    screen.fill((30, 30, 30))
-                    GRID_SIDES_COUNT = int(text)
+                    GRID_SIDES_COUNT = int(grid_size_input_text)
                     inititalise_maze()
-                    text = ''
-                    move_count = 0
+
                 elif event.key == pygame.K_BACKSPACE:
-                    text = text[:-1]
+                    grid_size_input_text = grid_size_input_text[:-1]
                 else:
-                    text += event.unicode
+                    grid_size_input_text += event.unicode
             
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if input_grid_size.collidepoint(event.pos):
-                active = not active
-            else:
-                active = False
-            if active:
-                text = ''
-                color = color_active  
-            else:
-                color = color_inactive
-           
-        moves_text = 'moves made : {}'.format(move_count)
-        moves_txt_surface = font.render(moves_text, True, color)
-        screen.fill((30, 30, 30), moves_count_label)
-        screen.blit(moves_txt_surface, (moves_count_label.x+5, moves_count_label.y+5))
-        pygame.draw.rect(screen, color, moves_count_label, 2)
+            _action_mouse_click_on_grid_size_setting()
+
+        _update_moves_label()
+        _update_grid_size_label()
 
 
-        txt_surface = font.render(text, True, color)
-        screen.fill((30, 30, 30), input_grid_size)        
-        screen.blit(txt_surface, (input_grid_size.x+5, input_grid_size.y+5))
-        # Blit the input_grid_size rect.
-        pygame.draw.rect(screen, color, input_grid_size, 2)
+
 
         pygame.display.flip()
