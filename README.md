@@ -11,7 +11,7 @@ Players can change the number of squares in the maze by typing in the lower left
 OR
 * [] use pipenv install to create package. 
 If you use pip env, please use pip to install pygame.  at time of commit, pipenv did not reslove pygame
-
+* [] run pytest
 ## running
 python -m mainlpy
 
