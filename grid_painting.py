@@ -10,6 +10,7 @@ class CellPaintCoOrdinates():
         """ Constructor allows for 2 cell objects to be passed, generating co-ordinates for 
         eitehr a square of a rectangle.
         """
+        
         self.Cell1 = cell1
         self.Cell2 = cell2
         self.Cell_h = cell_h
