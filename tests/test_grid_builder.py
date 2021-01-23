@@ -54,6 +54,13 @@ def test_assert_belows(twobytwogrid):
     assert cells[2].Neighbours.Below is cells[3]
     assert cells[3].Neighbours.Below is None
 
+def test_get_first_cell(twobytwogrid):
+    cells = twobytwogrid.get_cells()
+    assert cells[0] is twobytwogrid.get_start_cell()
+
+def test_get_last_cell(twobytwogrid):
+    cells = twobytwogrid.get_cells()
+    assert cells[3] is twobytwogrid.get_finish_cell()
 
 """
     1  4  7

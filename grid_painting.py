@@ -1,5 +1,5 @@
 from grid_creator import Grid, Cell, CellRelationships
-from game_colors import WHITE, BLUE, RED, GREY, ACTIVE, INACTIVE
+from game_colors import WHITE, BLUE, RED, GREY, ACTIVE, INACTIVE, GREEN
 import logging
 
 class CellPaintCoOrdinates():
@@ -125,8 +125,8 @@ class GridPainter():
         topleft_x = coOrds.TopLeft[1] + (margin /2)
         topleft_x = coOrds.TopLeft[1] + (margin /2)
         topleft_y = coOrds.TopLeft[0] + (margin /2)
-        botright_x =  margin
-        botright_y =  margin
+        botright_x =  margin /4
+        botright_y =  margin /4
         
         self._pygame.draw.rect(self._screen, color, (topleft_x, topleft_y, botright_x, botright_y), 0)        # used to re-colour the path after single_cell
         self._pygame.display.update()   
@@ -142,7 +142,13 @@ class GridPainter():
         self._pygame.draw.circle(self._screen, color, (mid_x, mid_y ), margin / 8)        
         self._pygame.display.update()   
 
+    def paint_solution(self, solution_cells):
+        for cell in solution_cells:
+            self.fill_cell_small(cell, color=GREEN)
 
+    def unpaint_solution(self, solution_cells):
+        for cell in solution_cells:
+            self.fill_cell_small(cell, color=BLUE)
 
     def _paint_cell_outline(self, cell):
         """ Paint he cell outline..

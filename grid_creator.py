@@ -77,6 +77,8 @@ class Grid():
     def get_start_cell(self):
         return self._cells[0]
 
+    def get_finish_cell(self):
+        return self._cells[len(self._cells)-1]
 
 class CellRelationships():
     """ 

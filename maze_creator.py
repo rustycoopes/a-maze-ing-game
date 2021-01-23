@@ -7,39 +7,49 @@ class MazeCursor():
     """
     def __init__(self, path, startCell):
         self._path = path
+        self._start_cell = startCell
         self._curr_cell = startCell
+
+    def reset_to_start(self):
+        self._curr_cell = self._start_cell
+
+    def reset_current_to_cell(self, cell):
+        self._curr_cell = cell
 
     def get_current_cell(self):
         return self._curr_cell
         
     def TryMoveLeft(self):
         if  self._path[self._curr_cell] is None:
-            return
+            return False
         can_move = self._curr_cell.Neighbours.Left in self._path[self._curr_cell]
         if can_move:
-            self._curr_cell = self._curr_cell.Neighbours.Left  
+            self._curr_cell = self._curr_cell.Neighbours.Left
+        return can_move
 
     def TryMoveRight(self):
         if  self._path[self._curr_cell] is None:
-            return
+            return False
         can_move = self._curr_cell.Neighbours.Right in self._path[self._curr_cell]
         if can_move:
             self._curr_cell = self._curr_cell.Neighbours.Right  
+        return can_move
 
     def TryMoveUp(self):
         if  self._path[self._curr_cell] is None:
-            return
+            return False
         can_move = self._curr_cell.Neighbours.Above in self._path[self._curr_cell]
         if can_move:
             self._curr_cell = self._curr_cell.Neighbours.Above  
+        return can_move
 
     def TryMoveDown(self):
         if  self._path[self._curr_cell] is None:
-            return
+            return False
         can_move = self._curr_cell.Neighbours.Below in self._path[self._curr_cell]
         if can_move:
             self._curr_cell = self._curr_cell.Neighbours.Below  
-
+        return can_move
 class Maze_Maker():
 
     def __init__(self, grid):
