@@ -64,7 +64,7 @@ def inititalise_maze():
         * Set the player and finish location on screen
     """
     CELL_LENGTH = (WIDTH - grid_start[0]) // GRID_SIDES_COUNT
-    global painter, maze_cursor, grid_size_input_text, move_count, solution_path, finish_cell
+    global painter, maze_cursor, grid_size_input_text, move_count, solution_path, finish_cell, solution_button_text
     blank_grid = grid_creator.Grid(CELL_LENGTH,CELL_LENGTH,GRID_SIDES_COUNT ,GRID_SIDES_COUNT)
 
     painter = GridPainter(pygame, screen,CELL_LENGTH,CELL_LENGTH, grid_start)
@@ -82,6 +82,7 @@ def inititalise_maze():
     logging.info("Solution found : {}".format(solution_exists))
     if solution_exists:
         logging.info("Solution contains {} steps".format(len(solution_path)))
+        solution_button_text = 'Show solution'
     else:
         solution_button_text = 'NO solution'
     painter.set_finish(grid_images.create_finish(CELL_LENGTH), ((GRID_SIDES_COUNT -1) * CELL_LENGTH))
@@ -96,6 +97,7 @@ grid_size_input_text = '{}'.format(GRID_SIDES_COUNT)
 input_grid_size_rect = pygame.Rect(1 , WIDTH - 38, 140, 32)
 moves_count_label_rect = pygame.Rect(150 , WIDTH - 38, 250, 32)
 show_solution_button_rect = pygame.Rect(410 , WIDTH - 38, 200, 32)
+maze_completed_rect = pygame.Rect(410 , WIDTH - 38, 200, 32)
 
 
 input_grid_size_is_active = False
@@ -122,6 +124,22 @@ def _action_mouse_click_on_show_solution(event):
         else:
             solution_button_text = 'Show solution'
             painter.unpaint_solution(solution_path)
+
+def _action_mouse_click_on_maze_completed(event):
+    """ Handle the capture of mouse clicking the complete message """
+    if maze_completed_rect is not None and maze_completed_rect.collidepoint(event.pos):
+        inititalise_maze()
+
+def _maze_completed_congratulate_player():
+    global maze_completed_rect
+    message_height = 50
+    message_width = 550
+    message_top_left_y = (WIDTH - message_width) / 2
+    message_top_left_x = (HEIGHT - message_height) / 2
+    maze_completed_rect = pygame.Rect(message_top_left_y ,message_top_left_x, message_width, message_height)
+    painter.update_rect_text("You did it ! great job Oliver  !!!!!, Click to restart", maze_completed_rect, input_grid_size_is_active)
+
+
 
 def  _update_moves_label():
     moves_text = 'moves made : {}'.format(move_count)
@@ -181,6 +199,11 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             _action_mouse_click_on_grid_size_setting(event)
             _action_mouse_click_on_show_solution(event)
+            if maze_cursor.reached_finish():
+                _action_mouse_click_on_maze_completed(event)
+
+        if maze_cursor.reached_finish():
+            _maze_completed_congratulate_player()
 
         _update_moves_label()
         _update_grid_size_label()

@@ -5,10 +5,11 @@ class MazeCursor():
     """ Represents a stateful location on the maze, with the ability to progress to 
     other connected cells.
     """
-    def __init__(self, path, startCell):
+    def __init__(self, path, startCell, finishCell):
         self._path = path
         self._start_cell = startCell
         self._curr_cell = startCell
+        self._finish_cell = finishCell
 
     def reset_to_start(self):
         self._curr_cell = self._start_cell
@@ -50,6 +51,9 @@ class MazeCursor():
         if can_move:
             self._curr_cell = self._curr_cell.Neighbours.Below  
         return can_move
+
+    def reached_finish(self):
+        return self._curr_cell is self._finish_cell
 class Maze_Maker():
 
     def __init__(self, grid):
@@ -88,7 +92,7 @@ class Maze_Maker():
                 logging.debug("back tracking from {}".format(cell.Number))
 
 
-        return MazeCursor(self._maze_path, self._grid.get_start_cell())
+        return MazeCursor(self._maze_path, self._grid.get_start_cell(), self._grid.get_finish_cell())
 
     def on_path_created(self, callback):
         self._path_created_callback = callback
