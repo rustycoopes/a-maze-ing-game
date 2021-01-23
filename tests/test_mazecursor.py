@@ -20,7 +20,7 @@ def two_step_path():
     path[cell2] = [cell1]
     path[cell3] = [cell1]
 
-    return MazeCursor(path, cell1)
+    return MazeCursor(path, cell1, cell3)
     
 
 def test_cursor_moves_right_then_left(two_step_path):
@@ -45,3 +45,20 @@ def test_cursor_moves_down_then_up(two_step_path):
     assert cell1.Neighbours.Below is cellBelow
     two_step_path.TryMoveUp()
     assert two_step_path.get_current_cell() is cell1
+
+def test_reset_cursor_works(two_step_path):
+    cell1 = two_step_path.get_current_cell()
+    two_step_path.TryMoveDown()
+    cellBelow = two_step_path.get_current_cell()
+    assert cell1.Neighbours.Below is cellBelow
+    two_step_path.reset_to_start()
+    assert two_step_path.get_current_cell() is cell1
+
+def test_reset_cursor_works(two_step_path):
+    cell1 = two_step_path.get_current_cell()
+    two_step_path.TryMoveRight()    
+    assert two_step_path.reached_finish()
+
+
+
+
