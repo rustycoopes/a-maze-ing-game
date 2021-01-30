@@ -77,8 +77,14 @@ def inititalise_maze():
     maze_cursor = maze_gen.create_new_maze()
     finish_cell = blank_grid.get_finish_cell()
     maze_solver = Solver(blank_grid.get_finish_cell())
-    solution_exists = maze_solver.create_solution(maze_cursor)
-    solution_path = maze_solver.get_maze_solution()
+    
+    if GRID_SIDES_COUNT < 30:  # Recusive depth error avoidance... the try catch is not working -  i want to keep recursion to display issue
+        solution_exists = maze_solver.create_solution(maze_cursor)
+        solution_path = maze_solver.get_maze_solution()
+    else:
+        solution_exists = False
+
+    
     logging.info("Solution found : {}".format(solution_exists))
     if solution_exists:
         logging.info("Solution contains {} steps".format(len(solution_path)))
